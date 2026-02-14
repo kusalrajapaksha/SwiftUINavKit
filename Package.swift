@@ -5,7 +5,10 @@ import PackageDescription
 
 let package = Package(
     name: "SwiftUINavKit",
-    platforms: [.iOS(.v13)],
+    platforms: [
+        .iOS(.v15),
+        .macOS(.v12)
+    ],
     products: [
         .library(
             name: "SwiftUINavKit",
@@ -16,6 +19,6 @@ let package = Package(
         .target(
             name: "SwiftUINavKit"
         ),
-
+        
     ]
 )
