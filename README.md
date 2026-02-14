@@ -215,7 +215,6 @@ class ProductViewModel: ObservableObject {
 For detailed documentation and examples, see:
 - [Complete Usage Guide](Documentation/USAGE.md)
 - [Example Project](Examples/)
-- [API Reference](Documentation/API.md)
 
 ## Requirements
 
@@ -255,15 +254,15 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 
 ## Support
 
-- 📫 [Open an issue](https://github.com/YourUsername/SwiftUINavKit/issues)
-- 💬 [Discussions](https://github.com/YourUsername/SwiftUINavKit/discussions)
-- 🐦 [Twitter](https://twitter.com/yourhandle)
+- 📫 [Open an issue](https://github.com/kusalrajapaksha/SwiftUINavKit/issues)
+- 💬 [Discussions](https://github.com/kusalrajapaksha/SwiftUINavKit/discussions)
+- 🐦 [Patreon](https://www.patreon.com/c/KusalDev)
 
 ## Author
 
 **Your Name**
-- GitHub: [@YourUsername](https://github.com/YourUsername)
-- Twitter: [@yourhandle](https://twitter.com/yourhandle)
+- GitHub: [@kusalrajapaksha](https://github.com/kusalrajapaksha)
+- Medium: [@Kusal Rajapaksha](https://medium.com/@kusalprabathrajapaksha)
 
 ## Acknowledgments
 
