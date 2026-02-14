@@ -51,7 +51,7 @@ Add SwiftUINavKit to your project via SPM:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/SwiftUINavKit.git", from: "1.0.0")
+    .package(url: "https://github.com/kusalrajapaksha/SwiftUINavKit.git", from: "1.0.0")
 ]
 ```
 
