@@ -25,8 +25,13 @@ public struct NavigationContainer<Root: View>: UIViewControllerRepresentable {
     }
 
     public func makeUIViewController(context: Context) -> UINavigationController {
+        // Capture the original view type name BEFORE wrapping
+        let originalTypeName = String(describing: Root.self)
+        
         let hosting = RouteHostingController(
-            rootView: rootView.environmentObject(router)
+            rootView: rootView.environmentObject(router),
+            routeID: nil,
+            originalViewTypeName: originalTypeName
         )
 
         let nav = UINavigationController(rootViewController: hosting)

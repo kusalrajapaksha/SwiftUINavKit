@@ -15,10 +15,12 @@ final class RouteHostingController<Content: View>: UIHostingController<Content> 
 
     let viewTypeName: String
     let routeID: String?
+    let originalViewTypeName: String?  // Store the original type before AnyView wrapping
 
-    init(rootView: Content, routeID: String? = nil) {
+    init(rootView: Content, routeID: String? = nil, originalViewTypeName: String? = nil) {
         self.viewTypeName = String(describing: Content.self)
         self.routeID = routeID
+        self.originalViewTypeName = originalViewTypeName
         super.init(rootView: rootView)
     }
 
@@ -32,6 +34,7 @@ final class RouteHostingController<Content: View>: UIHostingController<Content> 
 protocol RouteHostingControllerMarker: AnyObject {
     var viewTypeName: String { get }
     var routeID: String? { get }
+    var originalViewTypeName: String? { get }
 }
 
 extension RouteHostingController: RouteHostingControllerMarker {}
@@ -61,8 +64,15 @@ public final class NavigationRouter: ObservableObject {
     ) -> Bool {
         guard let nav = navigationController else { return false }
         
+        // Capture the original view type name BEFORE wrapping in AnyView
+        let originalTypeName = String(describing: V.self)
+        
         let rootView = injectRouter ? AnyView(view.environmentObject(self)) : AnyView(view)
-        let hosting = RouteHostingController(rootView: rootView, routeID: routeID)
+        let hosting = RouteHostingController(
+            rootView: rootView,
+            routeID: routeID,
+            originalViewTypeName: originalTypeName
+        )
         
         nav.pushViewController(hosting, animated: animated)
         return true
@@ -128,8 +138,10 @@ public final class NavigationRouter: ObservableObject {
 
         let targetName = String(describing: viewType)
 
+        // Check originalViewTypeName first (for type-erased views), fall back to viewTypeName
         guard let target = nav.viewControllers.first(where: {
-            ($0 as? RouteHostingControllerMarker)?.viewTypeName == targetName
+            guard let marker = $0 as? RouteHostingControllerMarker else { return false }
+            return marker.originalViewTypeName == targetName || marker.viewTypeName == targetName
         }) else {
             return false
         }
@@ -178,7 +190,8 @@ public final class NavigationRouter: ObservableObject {
         
         let targetName = String(describing: viewType)
         return nav.viewControllers.contains(where: {
-            ($0 as? RouteHostingControllerMarker)?.viewTypeName == targetName
+            guard let marker = $0 as? RouteHostingControllerMarker else { return false }
+            return marker.originalViewTypeName == targetName || marker.viewTypeName == targetName
         })
     }
     
@@ -190,7 +203,9 @@ public final class NavigationRouter: ObservableObject {
     /// Debug representation of the navigation stack (view type names only)
     public var debugStack: [String] {
         navigationController?.viewControllers.compactMap {
-            ($0 as? RouteHostingControllerMarker)?.viewTypeName
+            guard let marker = $0 as? RouteHostingControllerMarker else { return nil }
+            // Use originalViewTypeName if available, otherwise fall back to viewTypeName
+            return marker.originalViewTypeName ?? marker.viewTypeName
         } ?? []
     }
     
@@ -198,7 +213,9 @@ public final class NavigationRouter: ObservableObject {
     public var debugStackDetailed: [(type: String, id: String?)] {
         navigationController?.viewControllers.compactMap { vc in
             guard let marker = vc as? RouteHostingControllerMarker else { return nil }
-            return (type: marker.viewTypeName, id: marker.routeID)
+            // Use originalViewTypeName if available, otherwise fall back to viewTypeName
+            let typeName = marker.originalViewTypeName ?? marker.viewTypeName
+            return (type: typeName, id: marker.routeID)
         } ?? []
     }
 }
